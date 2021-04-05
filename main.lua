@@ -6,11 +6,15 @@ function love.load()
     sprites.bullet = love.graphics.newImage('assets/img/bullet.png')
     sprites.player = love.graphics.newImage('assets/img/player.png')
     sprites.zombie = love.graphics.newImage('assets/img/zombie.png')
+    sprites.heart = love.graphics.newImage('assets/img/heart.png')
 
     player = {}
     player.x = love.graphics.getWidth() / 2
     player.y = love.graphics.getHeight() / 2
     player.speed = 180
+    
+    startingLives = 3
+    player.lives = startingLives
 
     myFont = love.graphics.newFont(30)
 
@@ -49,7 +53,13 @@ function love.update(dt)
         if distanceBetween(z.x, z.y, player.x, player.y) < 30 then
             for i,z in ipairs(zombies) do
                 zombies[i] = nil
+            end
+
+            player.lives = player.lives - 1
+
+            if player.lives == 0 then
                 gameState = 1
+                player.lives = startingLives
                 player.x = love.graphics.getWidth() / 2
                 player.y = love.graphics.getHeight() / 2
             end
@@ -105,7 +115,15 @@ function love.draw()
 
     love.graphics.printf("Score: " .. score, 0, love.graphics.getHeight() - 100, love.graphics.getWidth(), "center")
 
-    love.graphics.draw(sprites.player, player.x, player.y, playerMouseAngle(), nil, nil, sprites.player:getWidth() /2, sprites.player:getHeight() / 2)
+    for i = 1, startingLives, 1 do
+        if i > player.lives then
+            love.graphics.setColor(1, 1, 1, 0.1)
+        end
+        love.graphics.draw(sprites.heart, sprites.heart:getWidth() * i, 50, nil, .5, nil, sprites.heart:getWidth(), sprites.heart:getHeight())
+        love.graphics.setColor(1, 1, 1, 1)
+    end
+
+    love.graphics.draw(sprites.player, player.x, player.y, playerMouseAngle(), nil, nil, sprites.player:getWidth() / 2, sprites.player:getHeight() / 2)
 
     for i,z in ipairs(zombies) do
         love.graphics.draw(sprites.zombie, z.x, z.y, zombiePlayerAngle(z), nil, nil, sprites.zombie:getWidth() / 2, sprites.zombie:getHeight() / 2)
