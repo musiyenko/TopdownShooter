@@ -25,6 +25,12 @@ function love.load()
     score = 0
     maxTime = 2
     timer = maxTime
+
+    sounds = {}
+    sounds.music = love.audio.newSource("assets/sounds/alexander-nakarada-metal.mp3", "stream")
+    sounds.zombieHit = love.audio.newSource("assets/sounds/zombie-hit.mp3", "static")
+    sounds.playerHit = love.audio.newSource("assets/sounds/player-hit.mp3", "static")
+    sounds.music:play()
 end
 
 function love.update(dt)
@@ -56,6 +62,7 @@ function love.update(dt)
             end
 
             player.lives = player.lives - 1
+            sounds.playerHit:play()
 
             if player.lives == 0 then
                 gameState = 1
@@ -77,6 +84,7 @@ function love.update(dt)
                 z.dead = true
                 b.dead = true
                 score = score + 1
+                sounds.zombieHit:play()
             end
         end
     end
