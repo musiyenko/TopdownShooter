@@ -1,6 +1,9 @@
 function love.load()
     math.randomseed(os.time())
 
+    GAMESTATE_MENU = 1
+    GAMESTATE_PLAYING = 2
+
     sprites = {}
     sprites.background = love.graphics.newImage('assets/img/background.jpg')
     sprites.bullet = love.graphics.newImage('assets/img/bullet.png')
@@ -21,7 +24,7 @@ function love.load()
     zombies = {}
     bullets = {}
 
-    gameState = 1
+    gameState = GAMESTATE_MENU
     score = 0
     maxTime = 2
     timer = maxTime
@@ -34,7 +37,7 @@ function love.load()
 end
 
 function love.update(dt)
-    if gameState == 2 then
+    if gameState == GAMESTATE_PLAYING then
         if love.keyboard.isDown("d") and player.x < love.graphics.getWidth() - sprites.player:getWidth() / 2 then
             player.x = player.x + player.speed * dt
         end
@@ -65,7 +68,7 @@ function love.update(dt)
             sounds.playerHit:play()
 
             if player.lives == 0 then
-                gameState = 1
+                gameState = GAMESTATE_MENU
                 player.lives = startingLives
                 player.x = love.graphics.getWidth() / 2
                 player.y = love.graphics.getHeight() / 2
@@ -103,7 +106,7 @@ function love.update(dt)
         end
     end
 
-    if gameState == 2 then
+    if gameState == GAMESTATE_PLAYING then
         timer = timer - dt
         if timer <= 0 then
             spawnZombie()
@@ -116,7 +119,7 @@ end
 function love.draw()
     love.graphics.draw(sprites.background, 0, 0)
 
-    if gameState == 1 then
+    if gameState == GAMESTATE_MENU then
         love.graphics.setFont(myFont)
         love.graphics.printf("Click anywhere to begin!", 0, 50, love.graphics.getWidth(), "center")
     end
@@ -150,10 +153,10 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button)
-    if button == 1 and gameState == 2 then
+    if button == 1 and gameState == GAMESTATE_PLAYING then
         spawnBullet()
-    elseif button == 1 and gameState == 1 then
-        gameState = 2
+    elseif button == 1 and gameState == GAMESTATE_MENU then
+        gameState = GAMESTATE_PLAYING
         maxTime = 2
         timer = maxTime
         score = 0
