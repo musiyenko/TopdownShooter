@@ -4,6 +4,9 @@ function love.load()
     GAMESTATE_MENU = 1
     GAMESTATE_PLAYING = 2
 
+    love.window.setTitle("Zombie shooter")
+    love.window.setMode(love.graphics:getWidth(), love.graphics:getHeight())
+
     sprites = {}
     sprites.background = love.graphics.newImage('assets/img/background.jpg')
     sprites.bullet = love.graphics.newImage('assets/img/bullet.png')
@@ -117,7 +120,7 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.draw(sprites.background, 0, 0)
+    love.graphics.draw(sprites.background, 0, 0, 0, love.graphics.getWidth() / sprites.background:getWidth(), love.graphics.getHeight() / sprites.background:getHeight())
 
     if gameState == GAMESTATE_MENU then
         love.graphics.setFont(myFont)
@@ -209,4 +212,10 @@ function spawnBullet()
     bullet.dead = false
     bullet.direction = playerMouseAngle()
     table.insert(bullets, bullet)
+end
+
+function love.keypressed(key)
+    if key == 'escape' then
+       love.event.quit()
+    end
 end
